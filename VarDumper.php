@@ -32,6 +32,8 @@ require_once __DIR__.'/Resources/functions/dump.php';
  */
 class VarDumper
 {
+    private static string $calledFrom;
+
     /**
      * @var callable|null
      */
@@ -39,6 +41,14 @@ class VarDumper
 
     public static function dump($var)
     {
+        $callingClass = debug_backtrace()[0];
+        if ($callingClass['file'] === __DIR__.'/Resources/functions/dump.php') {
+            $callingClass = debug_backtrace()[1];
+        }
+
+        $callingClassStr = $callingClass['file'] . "::" . $callingClass['line'];
+        self::$calledFrom = $callingClassStr;
+
         if (null === self::$handler) {
             self::register();
         }
@@ -61,6 +71,11 @@ class VarDumper
         self::$handler = $callable;
 
         return $prevHandler;
+    }
+
+    public static function getCalledFrom(): string
+    {
+        return self::$calledFrom;
     }
 
     private static function register(): void

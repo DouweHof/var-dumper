@@ -13,6 +13,7 @@ namespace Symfony\Component\VarDumper\Dumper;
 
 use Symfony\Component\VarDumper\Cloner\Cursor;
 use Symfony\Component\VarDumper\Cloner\Data;
+use Symfony\Component\VarDumper\VarDumper;
 
 /**
  * HtmlDumper dumps variables as HTML.
@@ -136,6 +137,8 @@ class HtmlDumper extends CliDumper
      */
     public function dump(Data $data, $output = null, array $extraDisplayOptions = [])
     {
+        $this->line .= VarDumper::getCalledFrom() . "\n";
+
         $this->extraDisplayOptions = $extraDisplayOptions;
         $result = parent::dump($data, $output);
         $this->dumpId = 'sf-dump-'.mt_rand();
